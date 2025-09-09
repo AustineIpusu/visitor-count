@@ -1,0 +1,17 @@
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+
+# Exclude all .zip files (your Lambda code)
+*.zip
+
+# Exclude sensitive files
+*.pem
+*.csv
+credentials
