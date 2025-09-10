@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
       type        = "Service"
       identifiers = ["cloudfront.amazonaws.com"]
     }
-    actions = ["s3:GetObject"]
+    actions   = ["s3:GetObject"]
     resources = ["${aws_s3_bucket.my_website_bucket.arn}/*"]
 
     condition {
@@ -166,11 +166,11 @@ resource "aws_iam_role_policy" "lambda_dynamo_policy" {
 
 # Lambda Function
 resource "aws_lambda_function" "visitor_counter" {
-  filename      = "visitor_counter.zip"
-  function_name = "visitor_counter"
-  role          = aws_iam_role.lambda_exec.arn
-  handler       = "visitor_counter.lambda_handler"
-  runtime       = "python3.9"
+  filename         = "visitor_counter.zip"
+  function_name    = "visitor_counter"
+  role             = aws_iam_role.lambda_exec.arn
+  handler          = "visitor_counter.lambda_handler"
+  runtime          = "python3.9"
   source_code_hash = filebase64sha256("visitor_counter.zip")
 
   layers = ["arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python39:11"]
@@ -184,8 +184,8 @@ resource "aws_apigatewayv2_api" "lambda_api" {
 
 # API Gateway Integration
 resource "aws_apigatewayv2_integration" "hello_integration" {
-  api_id           = aws_apigatewayv2_api.lambda_api.id
-  integration_type = "AWS_PROXY"
+  api_id             = aws_apigatewayv2_api.lambda_api.id
+  integration_type   = "AWS_PROXY"
   integration_method = "POST"
   integration_uri    = aws_lambda_function.visitor_counter.invoke_arn
 }
