@@ -9,44 +9,36 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    environment: production  # Optional: requires environment setup in GitHub
+    environment: production
 
     steps:
-    # Step 1: Checkout code from repository
     - name: Checkout code
       uses: actions/checkout@v3
     
-    # Step 2: Configure AWS credentials for S3 backend and provider
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: us-east-1  # ✅ FIXED: Hardcoded region or use secret
     
-    # Step 3: Set up Terraform with specific version
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: 1.5.0
     
-    # Step 4: Check code formatting
     - name: Terraform Format Check
       run: terraform fmt -check
     
-    # Step 5: Initialize Terraform (download providers, setup backend)
     - name: Terraform Init
       run: terraform init
       
-    # Step 6: Validate configuration syntax
     - name: Terraform Validate
       run: terraform validate
       
-    # Step 7: Generate execution plan (what will be created/changed)
     - name: Terraform Plan
       run: terraform plan -no-color -input=false
 
-    # Step 8: Apply changes automatically (only on main branch pushes)
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform apply -auto-approve -input=false
