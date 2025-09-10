@@ -49,7 +49,6 @@ data "aws_iam_policy_document" "s3_bucket_policy" {
       type        = "Service"
       identifiers = ["cloudfront.amazonaws.com"]
     }
-
     actions = ["s3:GetObject"]
     resources = ["${aws_s3_bucket.my_website_bucket.arn}/*"]
 
