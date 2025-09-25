@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Counter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        
+        .counter {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 2rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 0.5rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .success {
+            color: #27ae60;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+       .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #667eea;
+            margin-bottom: 1rem;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+         <img src="profile.jpg" alt="Your Name" class="profile-pic">
+        <h1>🌍 Welcome! </h1>
+        </h1>A.A Ipusu, a cloud architect built this website as a terraform infrastructure!</h1>
+        <p>You are visitor number:</p>
+        <div class="counter" id="counter">Loading...</div>
+        
+        <button class="btn" onclick="updateCounter()">
+            🔄 Update Counter
+        </button>
+        
+        <button class="btn" onclick="getCounter()">
+            📊 Get Current Count
+        </button>
+        
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const apiUrl = 'https://qifolf6l45.execute-api.us-east-1.amazonaws.com/prod/';
+        
+        async function updateCounter() {
+            await makeRequest('update');
+        }
+
+        async function getCounter() {
+            await makeRequest('get');
+        }
+
+        async function makeRequest(action) {
+            const counterElement = document.getElementById('counter');
+            const messageElement = document.getElementById('message');
+            
+            // Show loading
+            counterElement.textContent = '...';
+            counterElement.className = 'counter loading';
+            messageElement.textContent = '';
+            messageElement.className = '';
+            
+            try {
+                console.log('Making request to:', apiUrl);
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                counterElement.textContent = data.count;
+                counterElement.className = 'counter';
+                messageElement.textContent = `✅ Visitor count: ${data.count}`;
+                messageElement.className = 'success';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                counterElement.textContent = 'Error';
+                counterElement.className = 'counter error';
+                messageElement.textContent = `❌ Error: ${error.message}`;
+                messageElement.className = 'error';
+            }
+        }
+        
+        // Load count when page loads
+        document.addEventListener('DOMContentLoaded', getCounter);
+    </script>
+</body>
+</html><- All rights reserved: Thu Sep 25 16:47:04 WCAST 2025 -->
